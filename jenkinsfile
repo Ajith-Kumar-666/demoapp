@@ -1,0 +1,26 @@
+pipeline {
+    agent any
+    
+    tools {nodejs "NodeJs"}
+
+    stages {
+        stage('Clone sources') {
+            steps {
+                git branch: 'main', url: 'https://github.com/Ajith-Kumar-666/demoapp.git'
+            }
+        }
+    
+        stage('SonarQube analysis') {
+            environment {
+                SCANNER_HOME = tool 'sonarscanner';    
+            }
+            
+            steps {
+                
+                withSonarQubeEnv('sonarqube') {
+                    sh "${SCANNER_HOME}/bin/sonar-scanner"
+                }
+            }
+        }
+    }
+}
